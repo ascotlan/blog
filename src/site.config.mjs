@@ -1,8 +1,24 @@
+// Site-wide identity and links. Leave a value empty ("") to hide it everywhere.
 export const SITE = {
-  title: 'Antonio Scotland',
-  description: 'Notes on AI engineering, agentic AI in the workplace, and the Canadian AI job market.',
-  author: 'Antonio Scotland',
-  url: 'https://blog.scenehere.ca',
-  github: 'https://github.com/ascotlan',
-  linkedin: '', // add your LinkedIn profile URL
+  title: "Antonio Scotland",
+  description:
+    "Systems analyst turned AI engineer in Waterloo, Ontario. Writing about agentic AI at work, evaluating AI systems, and the Canadian AI job market.",
+  author: "Antonio Scotland",
+  initials: "AS",
+  tagline: "AI SYSTEMS · WATERLOO, ON",
+  location: "Waterloo, ON",
+  url: "https://blog.scenehere.ca",
+  status: "Open to AI engineering roles in Canada",
+  footerStatement:
+    "Building AI systems that survive contact with real requirements.",
+  email: "",
+  github: "https://github.com/ascotlan",
+  linkedin: "https://www.linkedin.com/in/antonio-k-scotland/",
+  resume: "/resume.pdf",
+  // Headshot: put a square photo (at least 400x400) at public/headshot.jpg, then set this to "/headshot.jpg".
+  // Until then the "AS" monogram is shown.
+  photo: "/headshot.jpg",
+  // Link for the "Evaluation loop" card on the home page, e.g. "/posts/my-first-eval/".
+  // Set it once a post or project shows the method in practice.
+  evalLoopLink: "",
 };

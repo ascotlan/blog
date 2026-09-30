@@ -7,6 +7,10 @@ Use this guide when researching, drafting, or editing posts for Antonio's blog o
 - **Goal:** Show that Antonio keeps up with current AI developments, deepen his own understanding, and attract the attention of potential employers.
 - **Primary readers:** Hiring managers, engineering leads, and recruiters at Canadian employers hiring for AI, ML, and software roles. Secondary readers are fellow practitioners.
 - Every post should leave a hiring manager with a clear sense of how Antonio thinks, what he has built, and what he could contribute to their team.
+- **Career context:** Antonio is a Senior Business Systems Analyst in Waterloo, Ontario, transitioning into AI engineering. Posts should build credibility for that move honestly. Do not describe him as an AI engineer with experience he does not have.
+- **Bridge strengths to draw on (from his resume):** requirements and specifications for AI-generation workflows (Cocoa Classroom, 2025 to present), writing developer prompts and QA acceptance criteria, SQL and data validation, API specifications (Swagger/OpenAPI), wealth management systems integration (FNZ, Aviso), full-stack development (Node.js, React, PostgreSQL, Python), test automation (Cypress, Playwright), and a MASc and BSc in Electrical Engineering plus an MBA.
+- **The gap to close publicly:** hands-on AI engineering work. Prioritise posts that show Antonio building, evaluating, and shipping AI systems, so each one doubles as a portfolio piece.
+- **Privacy:** never publish his phone number or other personal contact details beyond what he approves for the site.
 
 ## Explicit user instructions
 

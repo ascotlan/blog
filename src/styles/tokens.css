@@ -1,0 +1,91 @@
+/* Design tokens from the Figma style guide ("Technical editorial, without the theatre"). */
+:root {
+  --canvas: #f7f8f6;
+  --surface: #ffffff;
+  --surface-alt: #eef2ef;
+  --text: #17201e;
+  --muted: #5e6a67;
+  --border: #cfd8d4;
+  --accent: #087f6d;
+  --accent-strong: #056252;
+  --accent-soft: #ddf2ec;
+  --accent-text: var(--accent-strong); /* eyebrows, links, status labels */
+  --on-accent: #ffffff;
+  --code-bg: #111b19;
+  --code-fg: #e7f5f1;
+  --code-muted: #8fa29c;
+  --code-border: #26332f;
+  --warning: #7a4d00;
+  --warning-soft: #fff4d6;
+  --shadow-card: 0 8px 24px rgba(11, 26, 22, 0.07);
+  --focus: 0 0 0 3px #55d6b866;
+
+  --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 80px;
+  --space-page: 96px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --gutter: 72px;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --canvas: #101513;
+  --surface: #171e1b;
+  --surface-alt: #202925;
+  --text: #f0f5f2;
+  --muted: #a7b5b0;
+  --border: #34413c;
+  --accent: #55d6b8;
+  --accent-strong: #83e7d2;
+  --accent-soft: #193d35;
+  --accent-text: var(--accent);
+  --on-accent: #101513;
+  --code-bg: #0a0f0d;
+  --code-fg: #ddf7f0;
+  --code-border: #26332f;
+  --warning: #ffd47a;
+  --warning-soft: #342a17;
+  --shadow-card: none;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --canvas: #101513;
+    --surface: #171e1b;
+    --surface-alt: #202925;
+    --text: #f0f5f2;
+    --muted: #a7b5b0;
+    --border: #34413c;
+    --accent: #55d6b8;
+    --accent-strong: #83e7d2;
+    --accent-soft: #193d35;
+    --accent-text: var(--accent);
+    --on-accent: #101513;
+    --code-bg: #0a0f0d;
+    --code-fg: #ddf7f0;
+    --code-border: #26332f;
+    --warning: #ffd47a;
+    --warning-soft: #342a17;
+    --shadow-card: none;
+    color-scheme: dark;
+  }
+}
+
+@media (max-width: 900px) {
+  :root { --gutter: 20px; --space-section: 56px; --space-page: 56px; }
+}

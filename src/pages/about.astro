@@ -1,10 +1,208 @@
 ---
 import Base from '../layouts/Base.astro';
+import Avatar from '../components/Avatar.astro';
+import { SITE } from '../site.config.mjs';
+
+// Facts below come from Antonio's resume (September 2026). Keep them in sync when it changes.
+const arc = [
+  { title: 'Electrical engineering', text: 'Signals, systems, modelling, and quantitative problem solving. BSc and MASc in Electrical Engineering.' },
+  { title: 'Full-stack development', text: 'Interfaces, REST APIs, PostgreSQL databases, and deployments. Built client features and mentored full-stack cohorts.' },
+  { title: 'Business systems analysis', text: 'Wealth-management data flows and integrations (FNZ, Aviso) translated into specifications, data mappings, and acceptance criteria.' },
+  { title: 'AI-generation workflows', text: 'Requirements, developer prompts, SQL validation, and QA acceptance criteria for AI-generation workflows.' },
+  { title: 'AI engineering', text: 'Systems thinking, software craft, and testing discipline brought together for agentic products.', current: true },
+];
+const experience = [
+  { role: 'Business Systems Analyst', org: 'Cocoa Classroom', dates: '2025 to present', current: true,
+    text: 'Requirements, system specifications, developer prompts, and QA acceptance criteria for AI-generation workflows. SQL validation of data and metadata during a migration to a shared service architecture.' },
+  { role: 'Business Analyst (Contract)', org: 'Fintex Inc.', dates: '2024 to 2025',
+    text: 'Subject-matter expert on wealth-management data flows, APIs, and file formats (FNZ, Aviso, CIF matching, investor portal). Data mapping guides, validation rules, Swagger specs, and BRDs.' },
+  { role: 'Web Development Mentor', org: 'Lighthouse Labs', dates: '2024',
+    text: 'Mentored cohorts building full-stack apps with PostgreSQL and Node.js, and ran debugging and triage sessions.' },
+  { role: 'Frontend Developer Intern', org: 'Vosyn', dates: '2024',
+    text: 'Built and debugged UI components integrated with backend REST APIs in an Agile team.' },
+  { role: 'Web Developer (Contract)', org: 'EdTek Services', dates: '2023 to 2024',
+    text: 'Developed and deployed interactive web features, iterating on stakeholder feedback.' },
+];
+const actions = [
+  SITE.email && { href: `mailto:${SITE.email}`, label: 'Email Antonio ↗' },
+  SITE.linkedin && { href: SITE.linkedin, label: 'LinkedIn ↗' },
+  SITE.resume && { href: SITE.resume, label: 'Resume ↗', newTab: true },
+  SITE.github && { href: SITE.github, label: 'GitHub ↗' },
+].filter(Boolean) as { href: string; label: string; newTab?: boolean }[];
+const btnClass = (i: number) => (i === 0 ? 'btn btn--primary' : i === 1 ? 'btn btn--secondary' : 'btn btn--text');
+const roles = ['AI Engineer', 'Applied AI Engineer', 'Agent / LLM Engineer', 'AI Solutions Engineer'];
+const skills = [
+  { area: 'AI AND AGENTS', items: 'AI-generation workflows · Developer prompts · Acceptance criteria for AI output · Agent evaluation' },
+  { area: 'BACKEND AND DATA', items: 'Python · JavaScript · C# · .NET · Node.js · Express · React · PostgreSQL · MySQL · SQL · REST APIs' },
+  { area: 'TESTING AND QUALITY', items: 'Acceptance criteria · Functional and regression testing · Cypress · Playwright · Defect triage' },
+  { area: 'SYSTEMS ANALYSIS', items: 'Requirements elicitation · Data and process mapping · Swagger/OpenAPI specs · BRDs · UAT' },
+];
+const education = [
+  { degree: 'Master of Applied Science, Electrical Engineering', school: 'University of Waterloo' },
+  { degree: 'Master of Business Administration', school: 'Howard University' },
+  { degree: 'Bachelor of Science, Electrical Engineering', school: 'Howard University' },
+  { degree: 'Diploma, Full Stack Web Development', school: 'Lighthouse Labs' },
+];
 ---
-<Base title="About">
-  <article class="post">
-    <h1>About</h1>
-    <!-- TODO(Antonio): replace with your own bio. Keep it short: what you build, what you are looking for, how to reach you. -->
-    <p>I am a developer based in Canada, writing about AI engineering, agentic AI in the workplace, and the Canadian AI job market.</p>
-  </article>
+<Base title="About" description="Senior Business Systems Analyst in Waterloo, Ontario, moving into AI engineering.">
+  <section class="band hero">
+    <div class="container container--about hero-grid">
+      <div class="intro">
+        <p class="badge"><span class="dot" aria-hidden="true"></span>Waterloo, Ontario · Open to Canada roles</p>
+        <div class="section-heading">
+          <p class="eyebrow">About Antonio</p>
+          <h1 class="h-section">I make complex systems explicit enough to test.</h1>
+        </div>
+        <p class="lead">
+          I am a Senior Business Systems Analyst moving into AI engineering. My path runs from electrical engineering,
+          through full-stack development, into wealth-management systems and AI-generation workflows. The through-line
+          is simple: understand the system, define what good means, and leave enough evidence to improve it.
+        </p>
+        <div class="actions">
+          {actions.map((a, i) => <a class={btnClass(i)} href={a.href} target={a.newTab ? '_blank' : undefined} rel={a.newTab ? 'noopener' : undefined}>{a.label}</a>)}
+        </div>
+      </div>
+      <aside class="card profile" aria-label="Profile summary">
+        <Avatar size={SITE.photo ? 96 : 64} />
+        <dl>
+          <div><dt>BASED</dt><dd>Waterloo, ON</dd></div>
+          <div><dt>FOCUS</dt><dd>Agent evaluation</dd></div>
+          <div><dt>EXPERIENCE</dt><dd>Systems + software</dd></div>
+          <div><dt>EDUCATION</dt><dd>MASc + MBA</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band band--alt" aria-labelledby="experience-title">
+    <div class="container container--about stack">
+      <div class="section-heading">
+        <p class="eyebrow">Experience</p>
+        <h2 id="experience-title" class="h-section">Where I have done the work</h2>
+      </div>
+      <ol class="timeline">
+        {experience.map((e) => (
+          <li class={e.current ? 'current' : ''}>
+            <p class="t-dates">{e.dates}</p>
+            <div class="t-body">
+              <p class="t-role">{e.role}<span class="t-org"> · {e.org}</span></p>
+              <p class="t-text">{e.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="container container--about stack">
+      <div class="section-heading">
+        <p class="eyebrow">Career arc</p>
+        <h2 class="h-section">From systems theory to systems that think</h2>
+      </div>
+      <ol class="arc">
+        {arc.map((a, i) => (
+          <li class={a.current ? 'current' : ''}>
+            <p class="arc-title"><span>{String(i + 1).padStart(2, '0')}</span>{a.title}</p>
+            <p class="arc-text">{a.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="band band--alt">
+    <div class="container container--about working">
+      <div class="roles">
+        <div class="section-heading">
+          <p class="eyebrow">Roles sought</p>
+          <h2 class="h-section">AI engineering in Canada</h2>
+          <p class="desc">Best fit: teams applying language models to operational work, where quality, traceability, and human review matter.</p>
+        </div>
+        <ul class="role-list">{roles.map((r) => <li>→ {r}</li>)}</ul>
+      </div>
+      <div class="section-heading">
+        <p class="eyebrow">Working set</p>
+        <h2 class="h-section">Skills by system layer</h2>
+      </div>
+      <div class="skills">
+        {skills.map((s) => (
+          <div class="skill">
+            <p class="skill-area">{s.area}</p>
+            <p class="skill-items">{s.items}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="container container--about stack" style="--stack: 24px">
+      <div class="section-heading">
+        <p class="eyebrow">Education</p>
+        <h2 class="h-section">Technical depth and business context</h2>
+      </div>
+      <ul class="education">
+        {education.map((e) => <li><b>{e.degree}</b><span aria-hidden="true">　·　</span><span class="muted">{e.school}</span></li>)}
+      </ul>
+    </div>
+  </section>
 </Base>
+
+<style>
+  .hero { padding-top: 88px; padding-bottom: 88px; }
+  .hero-grid { display: flex; gap: 72px; align-items: flex-start; }
+  .intro { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .lead { font-size: 20px; line-height: 1.65; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .profile { width: 330px; flex: none; display: flex; flex-direction: column; gap: 16px; padding: 24px; box-shadow: none; }
+
+  .timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+  .timeline li { display: flex; gap: 32px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .t-dates { width: 150px; flex: none; font: 400 11px/1.9 var(--font-mono); color: var(--muted); text-transform: uppercase; }
+  .timeline .current .t-dates { color: var(--accent-text); font-weight: 600; }
+  .t-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .t-role { font-weight: 700; font-size: 17px; line-height: 1.4; }
+  .t-org { font-weight: 400; color: var(--muted); }
+  .t-text { font-size: 15px; line-height: 1.6; color: var(--muted); max-width: 760px; }
+  .profile dl { margin: 0; font: 400 11px/2 var(--font-mono); }
+  .profile dl div { display: flex; gap: 12px; }
+  .profile dt { color: var(--muted); min-width: 84px; }
+  .profile dd { margin: 0; }
+
+  .arc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; font-size: 15px; line-height: 1.7; }
+  .arc-title { font-weight: 700; }
+  .arc-title span { display: inline-block; width: 36px; }
+  .arc-text { color: var(--muted); padding-left: 36px; }
+  .arc .current .arc-title { color: var(--accent-text); }
+
+  .working { display: flex; flex-direction: column; gap: 32px; }
+  .roles { display: flex; gap: 64px; align-items: flex-start; }
+  .roles .section-heading { flex: 1; }
+  .role-list { list-style: none; margin: 0; padding: 0; width: 360px; flex: none; font-size: 16px; line-height: 2; }
+  .skills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .skill { display: flex; flex-direction: column; gap: 12px; min-height: 145px; padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .skill-area { font: 700 10px/1.3 var(--font-mono); color: var(--accent-text); }
+  .skill-items { font-size: 13px; line-height: 1.65; }
+
+  .education { list-style: none; margin: 0; padding: 0; font-size: 15px; line-height: 1.8; }
+  .education b { font-weight: 400; }
+
+  @media (max-width: 1000px) {
+    .hero-grid, .roles { flex-direction: column; gap: 32px; }
+    .profile, .role-list { width: 100%; max-width: 420px; }
+    .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .hero { padding-top: 56px; padding-bottom: 56px; }
+    .timeline li { flex-direction: column; gap: 6px; }
+    .t-dates { width: auto; }
+    .lead { font-size: 18px; }
+    .education span[aria-hidden] { display: none; }
+    .education .muted { display: block; font-size: 13px; line-height: 1.4; margin-bottom: 8px; }
+  }
+  @media (max-width: 560px) {
+    .skills { grid-template-columns: 1fr; }
+    .skill { min-height: 0; }
+  }
+</style>

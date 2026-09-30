@@ -1,0 +1,30 @@
+---
+// Compact list row for earlier work on the home page.
+import type { Project } from '../data/projects';
+import LinkRow from './LinkRow.astro';
+interface Props { project: Project }
+const { project } = Astro.props;
+const meta = [project.year, project.team].filter(Boolean).join(' · ');
+---
+<li class="project-row" data-wake={project.wake}>
+  <div class="row-main">
+    <p class="row-title">{project.title}{meta && <span class="row-meta">{meta}</span>}</p>
+    <p class="row-summary">{project.summary}</p>
+    <p class="row-stack">{project.stack.join(' · ')}</p>
+  </div>
+  <div class="row-links"><LinkRow links={project.links} /></div>
+</li>
+
+<style>
+  .project-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: 18px 0; border-top: 1px solid var(--border); }
+  .row-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .row-title { font-weight: 700; font-size: 18px; line-height: 1.35; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .row-meta { font: 400 10px/1.4 var(--font-mono); color: var(--muted); text-transform: uppercase; }
+  .row-summary { font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .row-stack { font: 400 10px/1.6 var(--font-mono); }
+  .row-links { flex: none; padding-top: 4px; }
+  @media (max-width: 760px) {
+    .project-row { flex-direction: column; gap: 10px; }
+    .row-links { padding-top: 0; }
+  }
+</style>

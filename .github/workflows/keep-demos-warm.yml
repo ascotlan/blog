@@ -1,0 +1,44 @@
+name: Keep demo backends awake
+
+# Render's free tier puts a service to sleep after 15 minutes without traffic, and waking it takes about a minute.
+# This pings the demo backends every 10 minutes during Toronto business hours on weekdays, when recruiters are
+# most likely to click through. Staying inside business hours keeps both services well under Render's
+# 750 free instance hours per month (going over suspends ALL free services until the next month).
+#
+# GitHub cron runs in UTC and can start a few minutes late. The job checks Toronto local time itself,
+# so daylight saving changes are handled automatically.
+
+on:
+  schedule:
+    - cron: '*/10 11-23,0-1 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping demo backends during Toronto business hours
+        env:
+          URLS: >-
+            https://antonio-invoice-now.onrender.com/
+            https://antonio-omnieats.onrender.com/
+          START_HOUR: '8'  # 8:00 Toronto time
+          END_HOUR: '20'   # until 19:59 Toronto time
+        run: |
+          day=$(TZ=America/Toronto date +%u)    # 1 = Monday ... 7 = Sunday
+          hour=$(TZ=America/Toronto date +%-H)
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && { [ "$day" -gt 5 ] || [ "$hour" -lt "$START_HOUR" ] || [ "$hour" -ge "$END_HOUR" ]; }; then
+            echo "Outside Toronto business hours (day $day, hour $hour). Skipping."
+            exit 0
+          fi
+          for url in $URLS; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 --retry 2 --retry-delay 10 "$url" || true)
+            if [ "$code" = "000" ]; then
+              echo "::warning::No response from $url"
+            else
+              echo "$url responded with HTTP $code"
+            fi
+          done

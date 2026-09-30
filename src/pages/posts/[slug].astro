@@ -1,30 +1,214 @@
 ---
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { getPublishedPosts, formatDate } from '../../lib';
+import Avatar from '../../components/Avatar.astro';
+import { SITE } from '../../site.config.mjs';
+import { getPublishedPosts, longDate, shortDate, readingMinutes, type Post } from '../../lib';
 
 export async function getStaticPaths() {
-  const posts = await getPublishedPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const posts = await getPublishedPosts(); // newest first
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
 }
-const { post } = Astro.props;
-const { Content } = await render(post);
+interface Props { post: Post; newer?: Post; older?: Post }
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
 const { title, summary, date, updated, tags, sources } = post.data;
+const toc = [...headings.filter((h) => h.depth === 2), ...(sources.length ? [{ slug: 'sources', text: 'Sources', depth: 2 }] : [])];
+const label = `FIELD NOTE${tags[0] ? ` / ${tags[0].toUpperCase()}` : ''}`;
+const hostOf = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+const sourceList = sources.map((s) => (typeof s === 'string' ? { title: hostOf(s), url: s } : s));
 ---
-<Base title={title} description={summary}>
-  <article class="post">
-    <h1>{title}</h1>
-    <p class="meta">
-      {formatDate(date)}
-      {updated && <> · Updated {formatDate(updated)}</>}
-      {tags.length > 0 && <> · {tags.join(', ')}</>}
-    </p>
-    <Content />
-    {sources.length > 0 && (
-      <section class="sources">
-        <h2>Sources</h2>
-        <ol>{sources.map((s) => <li><a href={s}>{s}</a></li>)}</ol>
-      </section>
+<Base title={title} description={summary} type="article" image={`/og/${post.id}.png`}>
+  <header class="article-header band">
+    <div class="article-header-inner">
+      <p class="article-label"><span>{label}</span><span class="rule" aria-hidden="true"></span></p>
+      <h1 class="article-title">{title}</h1>
+      <p class="article-summary">{summary}</p>
+      <p class="article-meta">
+        <time datetime={date.toISOString()}>{longDate(date)}</time>
+        {updated && <span class="muted">UPDATED {shortDate(updated)}</span>}
+        <span class="muted">{readingMinutes(post)} MIN READ</span>
+      </p>
+      {tags.length > 0 && <ul class="article-tags">{tags.map((t) => <li class="tag">{t}</li>)}</ul>}
+    </div>
+  </header>
+
+  <div class="article-layout">
+    {toc.length > 1 && (
+      <nav class="toc" aria-label="On this page">
+        <p class="toc-label">ON THIS PAGE</p>
+        <ol>{toc.map((h) => <li><a href={`#${h.slug}`} data-toc-link={h.slug}>{h.text}</a></li>)}</ol>
+        <p class="toc-progress" aria-hidden="true">READING POSITION<br /><span data-progress>0%</span></p>
+      </nav>
     )}
-  </article>
+
+    <article class="article-body">
+      <div class="prose">
+        <Content />
+        {sources.length > 0 && (
+          <>
+            <h2 id="sources">Sources</h2>
+            <ol class="sources">{sourceList.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.title} ↗</a><span class="source-url">{s.url}</span></li>)}</ol>
+          </>
+        )}
+      </div>
+
+      <aside class="author-card" aria-label="About the author">
+        <Avatar size={64} />
+        <div class="author-details">
+          <p class="author-name">{SITE.author}</p>
+          <p class="author-bio">Systems analyst moving into AI engineering, focused on rigorous agent evaluation, reliable workflows, and production evidence.</p>
+          <p class="author-links">
+            {SITE.github && <a href={SITE.github}>GitHub</a>}
+            {SITE.linkedin && <><span aria-hidden="true"> · </span><a href={SITE.linkedin}>LinkedIn</a></>}
+            {SITE.email && <><span aria-hidden="true"> · </span><a href={`mailto:${SITE.email}`}>Email</a></>}
+          </p>
+        </div>
+      </aside>
+
+      {(older || newer) && (
+        <nav class="post-nav" aria-label="More posts">
+          <div>{older && <a href={`/posts/${older.id}/`}><span class="dir">PREVIOUS</span><span class="t">{older.data.title}</span></a>}</div>
+          <div class="next">{newer && <a href={`/posts/${newer.id}/`}><span class="dir">NEXT</span><span class="t">{newer.data.title}</span></a>}</div>
+        </nav>
+      )}
+    </article>
+  </div>
 </Base>
+
+<style>
+  .article-header { padding-top: 88px; padding-bottom: 64px; }
+  .article-header-inner { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .article-label { display: flex; align-items: center; gap: 8px; font: 700 11px/1 var(--font-mono); color: var(--accent-text); }
+  .rule { width: 40px; height: 1px; background: var(--border); }
+  .article-title { font-size: 58px; font-weight: 400; line-height: 1.06; letter-spacing: -0.02em; }
+  .article-summary { max-width: 720px; font-size: 21px; line-height: 1.55; color: var(--muted); }
+  .article-meta { display: flex; flex-wrap: wrap; gap: 10px; font: 400 11px/1.4 var(--font-mono); text-transform: uppercase; }
+  .article-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .article-layout { display: flex; justify-content: center; gap: 64px; padding: 0 var(--gutter) 88px; }
+  .toc {
+    position: sticky; top: 24px; align-self: flex-start; width: 220px; flex: none;
+    display: flex; flex-direction: column; gap: 16px; padding: 8px 0 0 14px; border-left: 2px solid var(--accent); color: var(--muted);
+  }
+  .toc-label { font: 700 11px/1 var(--font-mono); }
+  .toc ol { list-style: none; margin: 0; padding: 0; font-size: 13px; line-height: 2; }
+  .toc a { text-decoration: none; }
+  .toc a:hover, .toc a.is-active { color: var(--accent-text); }
+  .toc-progress { font: 400 10px/1.5 var(--font-mono); }
+  .article-body { width: 720px; max-width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+
+  .author-card { display: flex; gap: 20px; align-items: center; padding: 24px; background: var(--surface-alt); border-radius: var(--radius-lg); }
+  .author-details { display: flex; flex-direction: column; gap: 6px; }
+  .author-name { font-weight: 700; font-size: 18px; }
+  .author-bio { font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .author-links { font: 400 11px/1.4 var(--font-mono); color: var(--accent-text); }
+  .author-links a { text-decoration: none; }
+  .author-links a:hover { text-decoration: underline; }
+
+  .post-nav { display: flex; justify-content: space-between; gap: 24px; padding-top: 16px; }
+  .post-nav > div { width: 300px; max-width: 48%; }
+  .post-nav .next { text-align: right; }
+  .post-nav a { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
+  .post-nav .next a { align-items: flex-end; }
+  .post-nav .dir { font: 400 10px/1 var(--font-mono); color: var(--muted); }
+  .post-nav .t { font-weight: 700; font-size: 14px; line-height: 1.4; color: var(--accent-text); }
+  .post-nav a:hover .t { text-decoration: underline; }
+
+  /* ---------- article prose ---------- */
+  .prose { font-size: 17px; line-height: 1.75; }
+  .prose :global(> * + *) { margin-top: 24px; }
+  .prose :global(h2) { font-size: 32px; font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; margin-top: 48px; scroll-margin-top: 24px; }
+  .prose :global(h3) { font-size: 22px; font-weight: 700; line-height: 1.35; margin-top: 36px; scroll-margin-top: 24px; }
+  .prose :global(h2 + *), .prose :global(h3 + *) { margin-top: 16px; }
+  .prose :global(a) { color: var(--accent-text); text-underline-offset: 3px; }
+  .prose :global(ul), .prose :global(ol) { padding-left: 1.4em; }
+  .prose :global(li + li) { margin-top: 4px; }
+  .prose :global(li::marker) { color: var(--accent-text); }
+  .prose :global(blockquote) { margin-left: 0; margin-right: 0; padding-left: 20px; border-left: 2px solid var(--accent); font-size: 21px; font-style: italic; line-height: 1.55; }
+  .prose :global(hr) { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
+  .prose :global(img) { border-radius: var(--radius-md); border: 1px solid var(--border); }
+  .prose :global(figure) { margin: 0; }
+  .prose :global(figcaption), .prose :global(.caption) { margin-top: 10px; font: 400 10px/1.5 var(--font-mono); color: var(--muted); text-transform: uppercase; }
+  .prose :global(:not(pre) > code) { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.1em 0.35em; }
+
+  .prose :global(.code-block) { border-radius: var(--radius-md); overflow: hidden; background: var(--code-bg); }
+  .prose :global(.code-toolbar) { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--code-border); font: 400 11px/1 var(--font-mono); color: var(--code-muted); }
+  .prose :global(.copy-btn) { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--code-fg); font: inherit; cursor: pointer; padding: 4px; }
+  .prose :global(.copy-btn svg) { width: 13px; height: 13px; }
+  .prose :global(pre) { margin: 0; padding: 18px; overflow-x: auto; background: var(--code-bg) !important; font-family: var(--font-mono); font-size: 14px; line-height: 1.65; }
+  .prose :global(pre code) { font-family: inherit; }
+
+  .prose :global(table) { width: 100%; border-collapse: collapse; font: 400 12px/2 var(--font-mono); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+  .prose :global(th), .prose :global(td) { text-align: left; padding: 4px 16px; white-space: nowrap; }
+  .prose :global(th) { font-weight: 400; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .prose :global(tr:first-child td) { padding-top: 10px; }
+
+  .prose :global(.callout) { margin-top: 24px; }
+  .prose :global(.callout-body > * + *) { margin-top: 4px; }
+
+  .sources { font-size: 15px; line-height: 1.6; }
+  .sources li { margin-top: 8px; }
+  .source-url { display: block; font: 400 11px/1.5 var(--font-mono); color: var(--muted); word-break: break-all; }
+
+  @media (max-width: 1100px) {
+    .toc { display: none; }
+  }
+  @media (max-width: 900px) {
+    .article-header { padding-top: 48px; padding-bottom: 40px; }
+    .article-title { font-size: 38px; }
+    .article-summary { font-size: 18px; }
+    .article-layout { padding-bottom: 56px; }
+    .prose :global(h2) { font-size: 26px; }
+    .author-card { flex-direction: column; align-items: flex-start; }
+    .post-nav > div { max-width: 48%; }
+    .prose :global(table) { display: block; overflow-x: auto; }
+  }
+</style>
+
+<script>
+  // Code blocks: toolbar with file name / language and a copy button.
+  const copyIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'code-block';
+    const bar = document.createElement('div');
+    bar.className = 'code-toolbar';
+    const name = document.createElement('span');
+    name.textContent = pre.dataset.title ?? pre.dataset.language ?? 'code';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.innerHTML = `${copyIcon}<span>COPY</span>`;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.innerText);
+        btn.lastElementChild!.textContent = 'COPIED';
+        setTimeout(() => (btn.lastElementChild!.textContent = 'COPY'), 1600);
+      } catch {}
+    });
+    bar.append(name, btn);
+    pre.replaceWith(wrap);
+    wrap.append(bar, pre);
+  });
+
+  // Table of contents: active section and reading position.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  const targets = links.map((a) => document.getElementById(a.dataset.tocLink!)).filter(Boolean) as HTMLElement[];
+  const progress = document.querySelector('[data-progress]');
+  const article = document.querySelector<HTMLElement>('.article-body');
+  const onScroll = () => {
+    let active = 0;
+    targets.forEach((t, i) => { if (t.getBoundingClientRect().top < 120) active = i; });
+    links.forEach((a, i) => a.classList.toggle('is-active', i === active));
+    if (progress && article) {
+      const r = article.getBoundingClientRect();
+      const pct = Math.min(100, Math.max(0, Math.round((-r.top / Math.max(1, r.height - innerHeight)) * 100)));
+      progress.textContent = `${pct}% · SECTION ${String(active + 1).padStart(2, '0')}`;
+    }
+  };
+  if (links.length) { addEventListener('scroll', onScroll, { passive: true }); onScroll(); }
+</script>

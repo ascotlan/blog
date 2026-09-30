@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import WakeDemos from '../components/WakeDemos.astro';
+import { visibleProjects } from '../data/projects';
+
+const ai = visibleProjects.filter((p) => p.category === 'ai');
+const earlier = visibleProjects.filter((p) => p.category === 'earlier');
+---
+<Base title="Projects" description="AI systems with testable claims, and the earlier full-stack work behind them.">
+  <section class="band intro">
+    <div class="container intro-grid">
+      <div class="section-heading">
+        <p class="eyebrow">Projects</p>
+        <h1 class="h-section">AI systems with testable claims</h1>
+        <p class="desc">Small, inspectable projects built around a simple rule: show the behaviour, failure cases, and evidence behind the result.</p>
+      </div>
+      <aside class="principles" aria-label="Build principles">
+        <p class="principles-label">BUILD PRINCIPLES</p>
+        <ol>
+          <li><span>01</span>Versioned evaluation cases</li>
+          <li><span>02</span>Traceable requirements</li>
+          <li><span>03</span>Human review at uncertainty</li>
+          <li><span>04</span>Operational cost measured</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band ai" aria-labelledby="ai-title">
+    <div class="container stack">
+      <div class="section-heading">
+        <p class="eyebrow">01 / Current</p>
+        <h2 id="ai-title" class="h-section">AI projects</h2>
+      </div>
+      {ai.length > 0 ? (
+        <div class="grid-2">{ai.map((p) => <ProjectCard project={p} variant="full" />)}</div>
+      ) : (
+        <div class="card coming">
+          <p class="status">Coming next</p>
+          <p class="coming-title">AI project write-ups will live here</p>
+          <p class="coming-text">Each project will land here with its evaluation cases, failure analysis, and a field note explaining the trade-offs. Follow along in <a href="/writing/">Writing</a> or by <a href="/rss.xml">RSS</a>.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {earlier.length > 0 && (
+    <section class="band band--alt" aria-labelledby="earlier-title">
+      <div class="container stack">
+        <div class="section-heading">
+          <p class="eyebrow">02 / Foundation</p>
+          <h2 id="earlier-title" class="h-section">Earlier work</h2>
+          <p class="desc">Full-stack systems that established the product and engineering habits I now bring to AI.</p>
+        </div>
+        <div class="earlier-list">{earlier.map((p) => <ProjectCard project={p} variant="wide" />)}</div>
+      </div>
+    </section>
+  )}
+  <WakeDemos />
+</Base>
+
+<style>
+  .intro { padding-top: 88px; padding-bottom: 16px; }
+  .intro-grid { display: flex; gap: 80px; align-items: flex-start; }
+  .intro-grid .section-heading { flex: 1; max-width: 640px; }
+  .principles { width: 360px; flex: none; display: flex; flex-direction: column; gap: 10px; padding: 20px; background: var(--surface-alt); border-radius: var(--radius-md); }
+  .principles-label { font: 700 10px/1 var(--font-mono); color: var(--accent-text); }
+  .principles ol { list-style: none; margin: 0; padding: 0; font-size: 13px; line-height: 1.8; }
+  .principles span { display: inline-block; width: 28px; }
+  .ai { padding-top: 72px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .earlier-list { display: flex; flex-direction: column; gap: 18px; }
+  .coming { display: flex; flex-direction: column; gap: 14px; padding: 30px; box-shadow: none; border-style: dashed; }
+  .coming-title { font-size: 25px; line-height: 1.2; }
+  .coming-text { max-width: 720px; font-size: 15px; line-height: 1.6; color: var(--muted); }
+  .coming-text a { color: var(--accent-text); }
+  @media (max-width: 900px) {
+    .intro { padding-top: 56px; }
+    .intro-grid { flex-direction: column; gap: 28px; }
+    .principles { width: 100%; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .coming { padding: 22px; }
+  }
+</style>

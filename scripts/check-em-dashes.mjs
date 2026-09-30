@@ -9,7 +9,7 @@ function scan(p) {
   if (fs.statSync(p).isDirectory()) return fs.readdirSync(p).forEach((f) => scan(path.join(p, f)));
   if (!/\.(md|mdx|astro)$/.test(p)) return;
   fs.readFileSync(p, 'utf8').split('\n').forEach((line, i) => {
-    if (line.includes('—')) hits.push(`${p}:${i + 1}: ${line.trim()}`);
+    if (line.includes('\u2014')) hits.push(`${p}:${i + 1}: ${line.trim()}`);
   });
 }
 roots.forEach(scan);
