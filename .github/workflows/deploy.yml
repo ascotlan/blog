@@ -1,0 +1,61 @@
+name: Deploy and cross-post
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: withastro/action@v6
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  crosspost:
+    # Runs only after the site is live, so the canonical URL resolves.
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Find posts changed in this push
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            files=$(git diff --name-only --diff-filter=AM "${{ github.event.before }}" "${{ github.sha }}" -- 'src/content/blog/*.md' | tr '\n' ' ')
+          else
+            files=""
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "Changed posts: ${files:-none}"
+      - name: Cross-post to dev.to
+        if: steps.changed.outputs.files != '' || github.event_name == 'workflow_dispatch'
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        run: node scripts/crosspost-devto.mjs ${{ steps.changed.outputs.files }}

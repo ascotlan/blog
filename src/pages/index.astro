@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.config.mjs';
+import { getPublishedPosts, formatDate } from '../lib';
+const posts = await getPublishedPosts();
+---
+<Base>
+  <section class="intro">
+    <h1>{SITE.title}</h1>
+    <p>{SITE.description}</p>
+  </section>
+  {posts.length === 0 && <p class="muted">First post coming soon.</p>}
+  <ul class="post-list">
+    {posts.map((p) => (
+      <li>
+        <a href={`/posts/${p.id}/`}><h2>{p.data.title}</h2></a>
+        <p class="meta">{formatDate(p.data.date)}{p.data.tags.length > 0 && ` · ${p.data.tags.join(', ')}`}</p>
+        <p>{p.data.summary}</p>
+      </li>
+    ))}
+  </ul>
+</Base>

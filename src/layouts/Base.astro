@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import { SITE } from '../site.config.mjs';
+
+interface Props { title?: string; description?: string; canonical?: string }
+const { title, description = SITE.description, canonical } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <meta property="og:title" content={title ?? SITE.title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content={title ? 'article' : 'website'} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">{SITE.title}</a>
+      <nav>
+        <a href="/">Posts</a>
+        <a href="/about/">About</a>
+        <a href="/rss.xml">RSS</a>
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <a href={SITE.github}>GitHub</a>
+      {SITE.linkedin && <a href={SITE.linkedin}>LinkedIn</a>}
+      <span>&copy; {new Date().getFullYear()} {SITE.author}</span>
+    </footer>
+  </body>
+</html>
