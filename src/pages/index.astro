@@ -1,22 +1,179 @@
 ---
 import Base from '../layouts/Base.astro';
+import PostItem from '../components/PostItem.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import WakeDemos from '../components/WakeDemos.astro';
+import Avatar from '../components/Avatar.astro';
 import { SITE } from '../site.config.mjs';
-import { getPublishedPosts, formatDate } from '../lib';
-const posts = await getPublishedPosts();
+import { NOW } from '../data/now';
+import { getPublishedPosts } from '../lib';
+import { visibleProjects } from '../data/projects';
+
+const posts = (await getPublishedPosts()).slice(0, 5);
+const aiProjects = visibleProjects.filter((p) => p.category === 'ai' && p.featured).slice(0, 3);
+const earlier = visibleProjects.filter((p) => p.category === 'earlier' && p.featured);
+const nowItems = NOW.items.filter((i) => i.text.trim());
+const nowUpdated = new Date(NOW.updated).toLocaleDateString('en-CA', { month: 'short', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
 ---
 <Base>
-  <section class="intro">
-    <h1>{SITE.title}</h1>
-    <p>{SITE.description}</p>
+  <section class="hero band" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-top">
+          {SITE.photo && <Avatar size={56} />}
+          <p class="badge"><span class="dot" aria-hidden="true"></span>{SITE.status}</p>
+        </div>
+        <p class="eyebrow">{SITE.author} · {SITE.location}</p>
+        <h1 id="hero-title" class="h-display">Systems analyst turned AI engineer. I specify, build, and evaluate agentic AI systems.</h1>
+        <p class="lead">
+          I have spent my career translating complex business needs into systems that can be tested and trusted.
+          Now I apply that discipline to AI: writing specifications, developer prompts, QA acceptance criteria,
+          and evals that separate a promising demo from production-ready results.
+        </p>
+        <div class="actions">
+          {SITE.resume
+            ? <a class="btn btn--primary" href={SITE.resume} target="_blank" rel="noopener">View resume ↗</a>
+            : <a class="btn btn--primary" href="/about/">About me →</a>}
+          {SITE.github && <a class="btn btn--secondary" href={SITE.github}>GitHub ↗</a>}
+          {SITE.linkedin && <a class="btn btn--text" href={SITE.linkedin}>LinkedIn ↗</a>}
+          {SITE.email && <a class="btn btn--text" href={`mailto:${SITE.email}`}>Email ↗</a>}
+        </div>
+      </div>
+      <aside class="card eval-loop" aria-label="How I evaluate AI systems">
+        <p class="loop-label">EVALUATION LOOP / 01</p>
+        <ol class="loop-steps">
+          <li><span>01</span><b>SPECIFY</b> expected behaviour</li>
+          <li aria-hidden="true" class="arrow">↓</li>
+          <li><span>02</span><b>EXERCISE</b> real task traces</li>
+          <li aria-hidden="true" class="arrow">↓</li>
+          <li><span>03</span><b>MEASURE</b> quality · cost · latency</li>
+          <li aria-hidden="true" class="arrow">↓</li>
+          <li><span>04</span><b>SHIP</b> with evidence</li>
+        </ol>
+        {SITE.evalLoopLink && <a class="loop-link" href={SITE.evalLoopLink}>See it in practice →</a>}
+      </aside>
+    </div>
   </section>
-  {posts.length === 0 && <p class="muted">First post coming soon.</p>}
-  <ul class="post-list">
-    {posts.map((p) => (
-      <li>
-        <a href={`/posts/${p.id}/`}><h2>{p.data.title}</h2></a>
-        <p class="meta">{formatDate(p.data.date)}{p.data.tags.length > 0 && ` · ${p.data.tags.join(', ')}`}</p>
-        <p>{p.data.summary}</p>
-      </li>
-    ))}
-  </ul>
+
+  {nowItems.length > 0 && (
+    <section class="now band--alt band--rule" aria-labelledby="now-title">
+      <div class="container now-grid">
+        <div class="now-head">
+          <h2 id="now-title" class="now-label">NOW</h2>
+          <p class="now-updated">UPDATED {nowUpdated}</p>
+        </div>
+        <dl class="now-items" style={`--cols:${Math.min(nowItems.length, 4)}`}>
+          {nowItems.map((i) => (
+            <div class="now-item">
+              <dt>{i.label}</dt>
+              <dd>{i.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )}
+
+  <section class="band" aria-labelledby="latest-title">
+    <div class="container stack">
+      <div class="section-heading">
+        <p class="eyebrow">Latest writing</p>
+        <h2 id="latest-title" class="h-section">Notes from the workbench</h2>
+        <p class="desc">Field notes on agent evaluation, practical AI workflows, and the Canadian market.</p>
+      </div>
+      {posts.length > 0 && <ul class="post-list">{posts.map((post) => <PostItem post={post} />)}</ul>}
+      {posts.length < 2 && (
+        <div class="low-content">
+          <p>
+            {posts.length === 0
+              ? <><b>First field notes are on the way.</b> New posts on agentic AI, evaluation, and the Canadian AI market will appear here. Subscribe by RSS to catch the first one.</>
+              : <><b>More field notes are on the way.</b> New posts land here first. Subscribe by RSS to catch the next one.</>}
+          </p>
+          <a class="btn btn--text" href={posts.length === 0 ? '/rss.xml' : '/writing/'}>{posts.length === 0 ? 'RSS feed →' : 'Browse archive →'}</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {(aiProjects.length > 0 || earlier.length > 0) && (
+    <section class="band band--alt" aria-labelledby="projects-title">
+      <div class="container stack">
+        <div class="section-heading">
+          <p class="eyebrow">Selected projects</p>
+          <h2 id="projects-title" class="h-section">Systems built to be inspected</h2>
+          <p class="desc">
+            {aiProjects.length > 0
+              ? 'AI work first, with implementation details and trade-offs left visible.'
+              : 'AI projects will appear here as they ship, each with its evaluation cases and a write-up.'}
+          </p>
+        </div>
+        {aiProjects.length > 0 && <div class="project-grid">{aiProjects.map((p) => <ProjectCard project={p} />)}</div>}
+        {earlier.length > 0 && (
+          <div class="earlier">
+            <p class="earlier-label">EARLIER FULL-STACK WORK</p>
+            <ul class="earlier-list">{earlier.map((p) => <ProjectRow project={p} />)}</ul>
+          </div>
+        )}
+        <a class="btn btn--text all-projects" href="/projects/">All projects →</a>
+      </div>
+    </section>
+  )}
+  <WakeDemos />
 </Base>
+
+<style>
+  .hero { padding-top: var(--space-page); padding-bottom: var(--space-page); }
+  .hero-grid { display: flex; gap: 64px; align-items: flex-start; }
+  .hero-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+  .hero-top { display: flex; align-items: center; gap: 14px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .eval-loop { width: 350px; flex: none; padding: 24px; box-shadow: none; font-family: var(--font-mono); }
+  .loop-label { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .loop-steps { list-style: none; margin: 0; padding: 0; font-size: 12px; line-height: 2.1; }
+  .loop-steps span { margin-right: 10px; }
+  .loop-steps b { font-weight: 400; margin-right: 10px; }
+  .loop-steps .arrow { color: var(--muted); }
+  .loop-link { display: inline-block; margin-top: 16px; font-size: 11px; font-weight: 600; color: var(--accent-text); text-decoration: none; }
+  .loop-link:hover { text-decoration: underline; }
+
+  .now { padding: 32px var(--gutter); }
+  .now-grid { display: flex; gap: 48px; align-items: flex-start; }
+  .now-head { width: 140px; flex: none; display: flex; flex-direction: column; gap: 6px; }
+  .now-label { font: 700 12px/1.3 var(--font-mono); color: var(--accent-text); display: flex; align-items: center; gap: 8px; }
+  .now-label::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .now-updated { font: 400 10px/1.4 var(--font-mono); color: var(--muted); }
+  .now-items { flex: 1; min-width: 0; margin: 0; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 28px; }
+  .now-item { display: flex; flex-direction: column; gap: 6px; }
+  .now-item dt { font: 600 10px/1.4 var(--font-mono); text-transform: uppercase; color: var(--muted); }
+  .now-item dd { margin: 0; font-size: 14px; line-height: 1.55; }
+
+  .low-content {
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    padding: 18px; background: var(--surface-alt); border-radius: var(--radius-md);
+  }
+  .low-content p { max-width: 760px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .low-content b { color: var(--text); }
+  .low-content .btn { flex: none; }
+
+  .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
+  .earlier { display: flex; flex-direction: column; gap: 6px; }
+  .earlier-label { font: 700 10px/1.4 var(--font-mono); color: var(--muted); }
+  .earlier-list { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
+  .all-projects { padding-left: 0; }
+
+  @media (max-width: 1100px) {
+    .hero-grid { flex-direction: column; gap: 40px; }
+    .eval-loop { width: 100%; max-width: 420px; }
+    .now-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .project-grid { grid-template-columns: 1fr; }
+    .now-grid { flex-direction: column; gap: 18px; }
+    .now-head { width: auto; flex-direction: row; align-items: baseline; gap: 12px; }
+    .low-content { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 560px) {
+    .now-items { grid-template-columns: 1fr; gap: 18px; }
+  }
+</style>

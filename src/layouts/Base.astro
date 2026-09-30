@@ -1,11 +1,19 @@
 ---
+import '@fontsource-variable/inter';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-mono/700.css';
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import { SITE } from '../site.config.mjs';
 
-interface Props { title?: string; description?: string; canonical?: string }
-const { title, description = SITE.description, canonical } = Astro.props;
-const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
-const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+interface Props { title?: string; description?: string; type?: 'website' | 'article'; image?: string }
+const { title, description = SITE.description, type = 'website', image = '/og/default.png' } = Astro.props;
+const imageURL = new URL(image, Astro.site).href;
+const pageTitle = title ? `${title} | ${SITE.title}` : `${SITE.title} | AI engineering notes`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>
 <html lang="en-CA">
@@ -16,26 +24,31 @@ const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#f7f8f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101513" media="(prefers-color-scheme: dark)" />
     <meta property="og:title" content={title ?? SITE.title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:type" content={title ? 'article' : 'website'} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title ?? SITE.title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={imageURL} />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">{SITE.title}</a>
-      <nav>
-        <a href="/">Posts</a>
-        <a href="/about/">About</a>
-        <a href="/rss.xml">RSS</a>
-      </nav>
-    </header>
-    <main><slot /></main>
-    <footer class="site-footer">
-      <a href={SITE.github}>GitHub</a>
-      {SITE.linkedin && <a href={SITE.linkedin}>LinkedIn</a>}
-      <span>&copy; {new Date().getFullYear()} {SITE.author}</span>
-    </footer>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
   </body>
 </html>

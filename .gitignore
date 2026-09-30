@@ -4,3 +4,9 @@ dist/
 .env
 # Weekly research digests stay private by default. Remove this line to publish them in the repo.
 research/
+
+# Screenshots and files Claude saves while working. Not part of the site.
+Claude outputs/
+
+# Full-size source images kept locally, not published.
+originals/

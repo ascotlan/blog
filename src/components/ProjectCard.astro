@@ -1,0 +1,36 @@
+---
+import { STATUS_LABEL, type Project } from '../data/projects';
+import LinkRow from './LinkRow.astro';
+interface Props { project: Project; variant?: 'compact' | 'full' | 'wide' }
+const { project, variant = 'compact' } = Astro.props;
+const text = variant === 'compact' ? project.summary : project.description;
+const status = [STATUS_LABEL[project.status], project.year, project.team].filter(Boolean).join('　·　');
+---
+<article class={`card project project--${variant}`} data-wake={project.wake}>
+  <p class="status">{status}</p>
+  <h3 class="project-title">{project.title}</h3>
+  <p class="project-text">{text}</p>
+  <p class="project-stack">{project.stack.join(' · ')}</p>
+  <LinkRow links={project.links} />
+  {variant !== 'compact' && project.note && <p class="project-note">{project.note}</p>}
+</article>
+
+<style>
+  .project { display: flex; flex-direction: column; gap: 14px; padding: 22px; }
+  .project-title { font-size: 22px; font-weight: 700; line-height: 1.25; }
+  .project-text { font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .project-stack { font: 400 10px/1.5 var(--font-mono); }
+  .project-note { font: 400 10px/1.5 var(--font-mono); color: var(--muted); }
+  .project--full { gap: 18px; padding: 24px; }
+  .project--full .project-title { font-size: 25px; font-weight: 400; line-height: 1.2; }
+  .project--full .project-text { font-size: 15px; line-height: 1.6; }
+  .project--full .project-stack, .project--full :global(.link-row) { font-size: 11px; }
+  .project--wide { gap: 16px; padding: 30px; box-shadow: none; }
+  .project--wide .project-title { font-size: 36px; font-weight: 400; line-height: 1.15; }
+  .project--wide .project-text { font-size: 15px; line-height: 1.65; max-width: 860px; }
+  .project--wide .project-stack, .project--wide :global(.link-row) { font-size: 11px; line-height: 1.7; }
+  @media (max-width: 900px) {
+    .project--wide { padding: 22px; }
+    .project--wide .project-title { font-size: 28px; }
+  }
+</style>

@@ -52,7 +52,7 @@ function buildArticle(file) {
   const canonical = `${SITE_URL}/posts/${slugFor(file)}/`;
   let body = absolutize(content.trim());
   if (Array.isArray(data.sources) && data.sources.length > 0) {
-    body += `\n\n## Sources\n\n${data.sources.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
+    body += `\n\n## Sources\n\n${data.sources.map((s, i) => (typeof s === 'string' ? `${i + 1}. ${s}` : `${i + 1}. [${s.title}](${s.url})`)).join('\n')}`;
   }
   body += `\n\n*Originally published at [blog.scenehere.ca](${canonical}).*\n`;
   return {
@@ -64,6 +64,7 @@ function buildArticle(file) {
       description: data.summary,
       tags: devtoTags(data.tags ?? []),
       canonical_url: canonical,
+      main_image: `${SITE_URL}/og/${slugFor(file)}.png`,
     },
   };
 }

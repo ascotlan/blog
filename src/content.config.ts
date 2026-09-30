@@ -13,7 +13,8 @@ const blog = defineCollection({
     status: z.enum(['draft', 'published']).default('draft'),
     summary: z.string(),
     tags: z.array(z.string()).default([]),
-    sources: z.array(z.string()).default([]),
+    // Each source is a URL, or { title, url } to show a readable name.
+    sources: z.array(z.union([z.string().url(), z.object({ title: z.string(), url: z.string().url() })])).default([]),
     devto: z.boolean().default(true),
   }),
 });

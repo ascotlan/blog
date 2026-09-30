@@ -1,0 +1,10 @@
+---
+import { postMeta, tagSlug, type Post } from '../lib';
+interface Props { post: Post }
+const { post } = Astro.props;
+---
+<li class="post-item" data-tags={post.data.tags.map(tagSlug).join(' ')}>
+  <p class="meta"><time datetime={post.data.date.toISOString()}>{postMeta(post)}</time></p>
+  <h3 class="title"><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
+  <p class="summary">{post.data.summary}</p>
+</li>

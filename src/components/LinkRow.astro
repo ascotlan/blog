@@ -1,0 +1,14 @@
+---
+interface Props { links: { label: string; url: string }[] }
+const { links } = Astro.props;
+---
+{links.length > 0 && (
+  <p class="link-row">
+    {links.map((l, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true">·</span>}
+        <a href={l.url} target="_blank" rel="noopener">{l.label} ↗</a>
+      </>
+    ))}
+  </p>
+)}
