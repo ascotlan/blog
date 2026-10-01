@@ -87,10 +87,12 @@ const nowUpdated = new Date(NOW.updated).toLocaleDateString('en-CA', { month: 's
         <div class="low-content">
           <p>
             {posts.length === 0
-              ? <><b>First field notes are on the way.</b> New posts on agentic AI, evaluation, and the Canadian AI market will appear here. Subscribe by RSS to catch the first one.</>
-              : <><b>More field notes are on the way.</b> New posts land here first. Subscribe by RSS to catch the next one.</>}
+              ? <><b>First field notes are on the way.</b> New posts on agentic AI, evaluation, and the Canadian AI market will appear here, and I share each one on LinkedIn.</>
+              : <><b>More field notes are on the way.</b> New posts land here first, and I share each one on LinkedIn.</>}
           </p>
-          <a class="btn btn--text" href={posts.length === 0 ? '/rss.xml' : '/writing/'}>{posts.length === 0 ? 'RSS feed →' : 'Browse archive →'}</a>
+          {posts.length === 0 && SITE.linkedin
+            ? <a class="btn btn--text" href={SITE.linkedin}>Follow on LinkedIn ↗</a>
+            : <a class="btn btn--text" href="/writing/">Browse archive →</a>}
         </div>
       )}
     </div>

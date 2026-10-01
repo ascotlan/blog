@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import WakeDemos from '../components/WakeDemos.astro';
 import { visibleProjects } from '../data/projects';
+import { SITE } from '../site.config.mjs';
 
 const ai = visibleProjects.filter((p) => p.category === 'ai');
 const earlier = visibleProjects.filter((p) => p.category === 'earlier');
@@ -39,7 +40,7 @@ const earlier = visibleProjects.filter((p) => p.category === 'earlier');
         <div class="card coming">
           <p class="status">Coming next</p>
           <p class="coming-title">AI project write-ups will live here</p>
-          <p class="coming-text">Each project will land here with its evaluation cases, failure analysis, and a field note explaining the trade-offs. Follow along in <a href="/writing/">Writing</a> or by <a href="/rss.xml">RSS</a>.</p>
+          <p class="coming-text">Each project will land here with its evaluation cases, failure analysis, and a field note explaining the trade-offs. Follow along in <a href="/writing/">Writing</a>{SITE.linkedin && <> or on <a href={SITE.linkedin}>LinkedIn</a></>}.</p>
         </div>
       )}
     </div>
