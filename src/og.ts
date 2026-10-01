@@ -75,35 +75,42 @@ export async function renderOg({ eyebrow, title, footerLeft, tags = [] }: OgInpu
 }
 
 // ---------------------------------------------------------------------------
-// Artistic cover (dev.to, 1000x420): generative abstract art behind light text.
+// Artistic covers: generative abstract art behind light text (link previews and dev.to).
 
 const D = { text: '#f4f8f6', muted: '#a9bab4', mint: '#83e7d2', accent: '#55d6b8', border: 'rgba(233,255,248,0.28)', chip: 'rgba(233,255,248,0.08)' };
 
-export async function renderCover({ eyebrow, title, footerLeft, tags = [] }: OgInput, seed: string): Promise<Uint8Array> {
-  const W = 1000, H = 420;
-  const size = title.length > 90 ? 34 : title.length > 60 ? 40 : 46;
+const COVER = {
+  og: { W: 1200, H: 630, bar: 12, pad: '52px 64px 46px 56px', mono: 56, monoFont: 21, name: 26, sub: 15, eyebrow: 18, gap: 16, titles: [62, 54, 46], titleMax: 680, footer: 16, tag: 14 },
+  devto: { W: 1000, H: 420, bar: 10, pad: '32px 48px 28px 44px', mono: 44, monoFont: 17, name: 21, sub: 12, eyebrow: 14, gap: 12, titles: [46, 40, 34], titleMax: 530, footer: 13, tag: 12 },
+} as const;
+
+/** Artistic cover with generative abstract art. 'og' = 1200x630 link previews (LinkedIn), 'devto' = 1000x420 dev.to cover. */
+export async function renderCover({ eyebrow, title, footerLeft, tags = [] }: OgInput, seed: string, format: OgFormat = 'devto'): Promise<Uint8Array> {
+  const L = COVER[format];
+  const { W, H } = L;
+  const size = title.length > 90 ? L.titles[2] : title.length > 60 ? L.titles[1] : L.titles[0];
   const tree = h('div', { width: W, height: H, fontFamily: 'Inter', color: D.text },
-    h('div', { width: 10, height: '100%', background: D.accent }),
-    h('div', { flex: 1, flexDirection: 'column', justifyContent: 'space-between', padding: '32px 48px 28px 44px' },
+    h('div', { width: L.bar, height: '100%', background: D.accent }),
+    h('div', { flex: 1, flexDirection: 'column', justifyContent: 'space-between', padding: L.pad },
       // header
-      h('div', { alignItems: 'center', gap: 13 },
-        h('div', { width: 44, height: 44, borderRadius: 6, background: D.accent, color: '#0b1311', alignItems: 'center', justifyContent: 'center', fontFamily: 'Plex', fontWeight: 600, fontSize: 17 }, 'AS'),
+      h('div', { alignItems: 'center', gap: Math.round(L.mono * 0.3) },
+        h('div', { width: L.mono, height: L.mono, borderRadius: 6, background: D.accent, color: '#0b1311', alignItems: 'center', justifyContent: 'center', fontFamily: 'Plex', fontWeight: 600, fontSize: L.monoFont }, 'AS'),
         h('div', { flexDirection: 'column', gap: 2 },
-          h('div', { fontSize: 21, fontWeight: 700 }, 'Antonio Scotland'),
-          h('div', { fontFamily: 'Plex', fontSize: 12, color: D.muted }, 'blog.scenehere.ca'),
+          h('div', { fontSize: L.name, fontWeight: 700 }, 'Antonio Scotland'),
+          h('div', { fontFamily: 'Plex', fontSize: L.sub, color: D.muted }, 'blog.scenehere.ca'),
         ),
       ),
       // title
-      h('div', { flexDirection: 'column', gap: 12, maxWidth: 530 },
-        h('div', { fontFamily: 'Plex', fontWeight: 600, fontSize: 14, color: D.mint, letterSpacing: 1 }, eyebrow),
+      h('div', { flexDirection: 'column', gap: L.gap, maxWidth: L.titleMax },
+        h('div', { fontFamily: 'Plex', fontWeight: 600, fontSize: L.eyebrow, color: D.mint, letterSpacing: 1 }, eyebrow),
         h('div', { fontSize: size, fontWeight: 700, lineHeight: 1.1, letterSpacing: -1 }, title),
       ),
       // footer
       h('div', { alignItems: 'center', gap: 16 },
-        h('div', { fontFamily: 'Plex', fontSize: 13, color: D.muted }, footerLeft),
+        h('div', { fontFamily: 'Plex', fontSize: L.footer, color: D.muted }, footerLeft),
         h('div', { gap: 8 },
           ...tags.slice(0, 3).map((t) =>
-            h('div', { fontFamily: 'Plex', fontSize: 12, padding: '4px 11px', borderRadius: 999, border: `1px solid ${D.border}`, background: D.chip, color: D.text }, t),
+            h('div', { fontFamily: 'Plex', fontSize: L.tag, padding: '4px 11px', borderRadius: 999, border: `1px solid ${D.border}`, background: D.chip, color: D.text }, t),
           ),
         ),
       ),

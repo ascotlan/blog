@@ -21,7 +21,7 @@ const label = `FIELD NOTE${tags[0] ? ` / ${tags[0].toUpperCase()}` : ''}`;
 const hostOf = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
 const sourceList = sources.map((s) => (typeof s === 'string' ? { title: hostOf(s), url: s } : s));
 ---
-<Base title={title} description={summary} type="article" image={`/og/${post.id}.png`}>
+<Base title={title} description={summary} type="article" image={`/og/${post.id}.png`} published={date} updated={updated} tags={tags}>
   <header class="article-header band">
     <div class="article-header-inner">
       <p class="article-label"><span>{label}</span><span class="rule" aria-hidden="true"></span></p>
