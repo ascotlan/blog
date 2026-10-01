@@ -64,7 +64,7 @@ function buildArticle(file) {
       description: data.summary,
       tags: devtoTags(data.tags ?? []),
       canonical_url: canonical,
-      main_image: `${SITE_URL}/og/${slugFor(file)}.png`,
+      main_image: `${SITE_URL}/og/devto/${slugFor(file)}.png`, // 1000x420, dev.to's cover shape
     },
   };
 }

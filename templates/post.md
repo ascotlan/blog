@@ -2,7 +2,7 @@
 title: ""
 date: YYYY-MM-DD
 status: draft        # draft | published. Set to published only when approved.
-summary: ""          # one or two sentences. Used for the site listing, SEO and the dev.to description.
+summary: ""          # 150 characters max (the build fails if longer). Site listing, SEO, dev.to description, LinkedIn teaser seed
 tags: []             # up to 4 for dev.to, lowercase, letters and numbers only (e.g. ai, agents, career)
 sources: []          # every source cited: a full URL, or { title: "Org, Page title", url: "https://..." }
 devto: true          # set false to skip cross-posting this post
