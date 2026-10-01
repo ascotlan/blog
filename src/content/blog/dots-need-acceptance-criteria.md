@@ -2,7 +2,7 @@
 title: "OpenAI's dots need acceptance criteria, not just Custom Rules"
 date: 2026-09-30
 status: published
-summary: "OpenAI's new always-on agents come with Custom Rules that say what a dot may do. They do not say what a good result looks like. A systems analyst's case for earning agent autonomy through evidence against acceptance criteria."
+summary: "Custom Rules say what OpenAI's dots may do, not what a good result looks like. A systems analyst's case for earning agent autonomy through evidence."
 tags: [agents, evals, openai, workflows]
 sources:
   - { title: "OpenAI, Introducing dots", url: "https://openai.com/index/introducing-dots/" }

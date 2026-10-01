@@ -45,7 +45,7 @@ Front matter for each post:
 title: ""
 date: YYYY-MM-DD
 status: draft        # draft | published (published only after approval)
-summary: ""          # one or two sentences, also the dev.to description and LinkedIn teaser seed
+summary: ""          # 150 characters max (the build fails if longer). Site listing, SEO, dev.to description, LinkedIn teaser seed
 tags: []             # up to 4, lowercase letters and numbers, for dev.to compatibility
 sources: []          # full URLs for every source cited
 devto: true          # false skips cross-posting
