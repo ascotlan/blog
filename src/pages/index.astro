@@ -28,8 +28,9 @@ const nowUpdated = new Date(NOW.updated).toLocaleDateString('en-CA', { month: 's
         <h1 id="hero-title" class="h-display">Systems analyst turned AI engineer. I specify, build, and evaluate agentic AI systems.</h1>
         <p class="lead">
           I have spent my career translating complex business needs into systems that can be tested and trusted.
-          Now I apply that discipline to AI: writing specifications, developer prompts, QA acceptance criteria,
-          and evals that separate a promising demo from production-ready results.
+          Now I apply that discipline to AI. I am leading the design of an LLM validation agent for AI-generated
+          lessons, and I write the specifications, acceptance criteria, and evals that separate a promising demo
+          from production-ready results.
         </p>
         <div class="actions">
           {SITE.resume
@@ -80,14 +81,14 @@ const nowUpdated = new Date(NOW.updated).toLocaleDateString('en-CA', { month: 's
       <div class="section-heading">
         <p class="eyebrow">Latest writing</p>
         <h2 id="latest-title" class="h-section">Notes from the workbench</h2>
-        <p class="desc">Field notes on agent evaluation, practical AI workflows, and the Canadian market.</p>
+        <p class="desc">Field notes on agent evaluation and practical AI workflows.</p>
       </div>
       {posts.length > 0 && <ul class="post-list">{posts.map((post) => <PostItem post={post} />)}</ul>}
       {posts.length < 2 && (
         <div class="low-content">
           <p>
             {posts.length === 0
-              ? <><b>First field notes are on the way.</b> New posts on agentic AI, evaluation, and the Canadian AI market will appear here, and I share each one on LinkedIn.</>
+              ? <><b>First field notes are on the way.</b> New posts on agentic AI and evaluation will appear here, and I share each one on LinkedIn.</>
               : <><b>More field notes are on the way.</b> New posts land here first, and I share each one on LinkedIn.</>}
           </p>
           {posts.length === 0 && SITE.linkedin
@@ -106,7 +107,7 @@ const nowUpdated = new Date(NOW.updated).toLocaleDateString('en-CA', { month: 's
           <h2 id="projects-title" class="h-section">Systems built to be inspected</h2>
           <p class="desc">
             {aiProjects.length > 0
-              ? 'AI work first, with implementation details and trade-offs left visible.'
+              ? 'AI work first, including what is in progress now.'
               : 'AI projects will appear here as they ship, each with its evaluation cases and a write-up.'}
           </p>
         </div>

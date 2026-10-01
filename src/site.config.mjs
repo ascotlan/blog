@@ -2,7 +2,7 @@
 export const SITE = {
   title: "Antonio Scotland",
   description:
-    "Systems analyst turned AI engineer in Waterloo, Ontario. Writing about agentic AI at work, evaluating AI systems, and the Canadian AI job market.",
+    "AI engineer in Waterloo, Ontario, focused on agent evaluation, with a systems analysis background. Field notes on agentic AI at work and evaluating AI systems.",
   author: "Antonio Scotland",
   initials: "AS",
   tagline: "AI SYSTEMS · WATERLOO, ON",

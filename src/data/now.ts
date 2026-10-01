@@ -6,11 +6,11 @@ export const NOW = {
   items: [
     {
       label: 'Working',
-      text: 'Business Systems Analyst at Cocoa Classroom, specifying AI-generation workflows: requirements, developer prompts, and QA acceptance criteria.',
+      text: 'Leading the design of an LLM validation agent for AI-generated lessons at Cocoa Classroom, after mapping and auditing the existing generation pipeline.',
     },
     {
       label: 'Writing',
-      text: 'Field notes on agentic AI at work, evaluating AI systems, and the Canadian AI job market.',
+      text: 'Field notes on agentic AI at work and evaluating AI systems.',
     },
     {
       label: 'Building',
