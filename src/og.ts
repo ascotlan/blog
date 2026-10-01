@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import { abstractArt } from './og-art';
 
 const font = (pkg: string, file: string) => fs.readFileSync(path.resolve('node_modules', pkg, 'files', file));
 const FONTS = [
@@ -71,4 +72,45 @@ export async function renderOg({ eyebrow, title, footerLeft, tags = [] }: OgInpu
   );
   const svg = await satori(tree as any, { width: L.w, height: L.h, fonts: FONTS });
   return new Resvg(svg, { fitTo: { mode: 'width', value: L.w } }).render().asPng();
+}
+
+// ---------------------------------------------------------------------------
+// Artistic cover (dev.to, 1000x420): generative abstract art behind light text.
+
+const D = { text: '#f4f8f6', muted: '#a9bab4', mint: '#83e7d2', accent: '#55d6b8', border: 'rgba(233,255,248,0.28)', chip: 'rgba(233,255,248,0.08)' };
+
+export async function renderCover({ eyebrow, title, footerLeft, tags = [] }: OgInput, seed: string): Promise<Uint8Array> {
+  const W = 1000, H = 420;
+  const size = title.length > 90 ? 34 : title.length > 60 ? 40 : 46;
+  const tree = h('div', { width: W, height: H, fontFamily: 'Inter', color: D.text },
+    h('div', { width: 10, height: '100%', background: D.accent }),
+    h('div', { flex: 1, flexDirection: 'column', justifyContent: 'space-between', padding: '32px 48px 28px 44px' },
+      // header
+      h('div', { alignItems: 'center', gap: 13 },
+        h('div', { width: 44, height: 44, borderRadius: 6, background: D.accent, color: '#0b1311', alignItems: 'center', justifyContent: 'center', fontFamily: 'Plex', fontWeight: 600, fontSize: 17 }, 'AS'),
+        h('div', { flexDirection: 'column', gap: 2 },
+          h('div', { fontSize: 21, fontWeight: 700 }, 'Antonio Scotland'),
+          h('div', { fontFamily: 'Plex', fontSize: 12, color: D.muted }, 'blog.scenehere.ca'),
+        ),
+      ),
+      // title
+      h('div', { flexDirection: 'column', gap: 12, maxWidth: 530 },
+        h('div', { fontFamily: 'Plex', fontWeight: 600, fontSize: 14, color: D.mint, letterSpacing: 1 }, eyebrow),
+        h('div', { fontSize: size, fontWeight: 700, lineHeight: 1.1, letterSpacing: -1 }, title),
+      ),
+      // footer
+      h('div', { alignItems: 'center', gap: 16 },
+        h('div', { fontFamily: 'Plex', fontSize: 13, color: D.muted }, footerLeft),
+        h('div', { gap: 8 },
+          ...tags.slice(0, 3).map((t) =>
+            h('div', { fontFamily: 'Plex', fontSize: 12, padding: '4px 11px', borderRadius: 999, border: `1px solid ${D.border}`, background: D.chip, color: D.text }, t),
+          ),
+        ),
+      ),
+    ),
+  );
+  let svg = await satori(tree as any, { width: W, height: H, fonts: FONTS });
+  // Paint the artwork first, underneath everything satori drew.
+  svg = svg.replace(/(<svg[^>]*>)/, `$1${abstractArt({ width: W, height: H, seed })}`);
+  return new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render().asPng();
 }

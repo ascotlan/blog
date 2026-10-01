@@ -27,6 +27,9 @@ const headers = {
   'user-agent': 'blog.scenehere.ca-crosspost',
 };
 
+// Bump when the cover design changes, so dev.to fetches the new image instead of its cached copy.
+const COVER_VERSION = 2;
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function slugFor(file) {
@@ -101,7 +104,7 @@ function buildArticle(file) {
       description: data.summary,
       tags: devtoTags(data.tags ?? []),
       canonical_url: canonical,
-      main_image: `${SITE_URL}/og/devto/${slugFor(file)}.png`, // 1000x420, dev.to's cover shape
+      main_image: `${SITE_URL}/og/devto/${slugFor(file)}.png?v=${COVER_VERSION}`, // 1000x420, dev.to's cover shape
     },
   };
 }
