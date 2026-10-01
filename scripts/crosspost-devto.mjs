@@ -45,12 +45,49 @@ function absolutize(markdown) {
   return markdown.replace(/\]\(\//g, `](${SITE_URL}/`);
 }
 
+// Adapt site-specific markdown to what dev.to's renderer understands.
+function toDevtoMarkdown(markdown) {
+  const out = [];
+  let fence = null; // the fence marker of the open code block, e.g. "```"
+  for (const line of markdown.split('\n')) {
+    const m = line.match(/^(\s*)(`{3,}|~{3,})(.*)$/);
+    if (m && !fence) {
+      // Opening fence. dev.to only accepts a bare language after the backticks, so
+      // move extras like title="file.txt" into a caption line above the block.
+      const [, indent, marker, info] = m;
+      const lang = (info.trim().match(/^[\w+#.-]+/) || [''])[0];
+      const title = info.match(/title="([^"]+)"/)?.[1];
+      if (title) out.push(`${indent}*${title}*`, '');
+      out.push(`${indent}${marker}${lang}`);
+      fence = marker;
+      continue;
+    }
+    if (m && fence && m[2].startsWith(fence[0]) && m[2].length >= fence.length && !m[3].trim()) {
+      out.push(line);
+      fence = null;
+      continue;
+    }
+    if (!fence) {
+      // GitHub-style callouts (> [!NOTE]) become a bold label dev.to can show.
+      const callout = line.match(/^(\s*>\s*)\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)$/);
+      if (callout) {
+        const label = { NOTE: 'Note', TIP: 'Tip', IMPORTANT: 'Important', WARNING: 'Warning', CAUTION: 'Warning' }[callout[2]];
+        out.push(`${callout[1]}**${label}:** ${callout[3]}`.trimEnd());
+        continue;
+      }
+    }
+    out.push(line);
+  }
+  // Drop HTML comments (review notes and the like).
+  return out.join('\n').replace(/<!--[\s\S]*?-->\n?/g, '');
+}
+
 function buildArticle(file) {
   const { data, content } = matter(fs.readFileSync(file, 'utf8'));
   if (data.status !== 'published') return { skip: 'status is not published' };
   if (data.devto === false) return { skip: 'devto: false' };
   const canonical = `${SITE_URL}/posts/${slugFor(file)}/`;
-  let body = absolutize(content.trim());
+  let body = toDevtoMarkdown(absolutize(content.trim()));
   if (Array.isArray(data.sources) && data.sources.length > 0) {
     body += `\n\n## Sources\n\n${data.sources.map((s, i) => (typeof s === 'string' ? `${i + 1}. ${s}` : `${i + 1}. [${s.title}](${s.url})`)).join('\n')}`;
   }
