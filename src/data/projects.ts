@@ -51,6 +51,21 @@ export const projects: Project[] = [
     featured: true,
     hidden: true,
   },
+  // Current AI work. Keep every claim true today: update the summary as milestones land (prototype, test set, shipping).
+  {
+    title: 'LLM validation agent for AI-generated lessons',
+    status: 'in-progress',
+    category: 'ai',
+    year: 2026,
+    summary:
+      'Mapped and audited the existing AI generation pipeline. Next: a shadow-mode prototype measured against a labeled test set.',
+    description:
+      'I own the design of an LLM validation agent that checks AI-generated lessons. So far I have mapped and audited the existing AI generation pipeline and written the design plan for the agent. Next: a shadow-mode prototype, measured against a labeled test set.',
+    stack: ['LLM-as-judge', 'Evaluation design', 'Pipeline audit'],
+    links: [],
+    note: 'Work in progress at Cocoa Classroom. The code is private.',
+    featured: true,
+  },
   // Earlier work, from Antonio's resume and the project READMEs on GitHub.
   {
     title: 'InvoiceNow',
