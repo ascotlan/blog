@@ -5,7 +5,7 @@ export const GET: APIRoute = async () => {
   const png = await renderCover(
     {
       eyebrow: 'AI ENGINEERING NOTES',
-      title: 'AI engineer focused on agent evaluation, with a systems analysis background.',
+      title: 'Agent evaluation and LLM validation, from a systems analysis background.',
       footerLeft: 'Agentic AI at work  ·  Evaluating AI systems',
     },
     'blog.scenehere.ca',

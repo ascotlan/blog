@@ -8,12 +8,12 @@ const arc = [
   { title: 'Electrical engineering', text: 'Signals, systems, modelling, and quantitative problem solving. BSc and MASc in Electrical Engineering.' },
   { title: 'Full-stack development', text: 'Interfaces, REST APIs, PostgreSQL databases, and deployments. Built client features and mentored full-stack cohorts.' },
   { title: 'Business systems analysis', text: 'Wealth-management data flows and integrations (FNZ, Aviso) translated into specifications, data mappings, and acceptance criteria.' },
-  { title: 'AI-generation workflows', text: 'Requirements, developer prompts, SQL validation, and QA acceptance criteria for AI-generation workflows.' },
+  { title: 'AI-generation workflows', text: 'Requirements and QA for AI-generation workflows, then the design of an LLM validation agent that checks their output.' },
   { title: 'AI engineering', text: 'Systems thinking, software craft, and testing discipline brought together for agentic products.', current: true },
 ];
 const experience = [
   { role: 'Business Systems Analyst', org: 'Cocoa Classroom', dates: '2025 to present', current: true,
-    text: 'Requirements, system specifications, developer prompts, and QA acceptance criteria for AI-generation workflows. SQL validation of data and metadata during a migration to a shared service architecture.' },
+    text: 'Leading the design of an LLM validation agent for AI-generated lessons, after mapping the existing generation pipeline and auditing it against the code. Requirements, acceptance criteria, and QA for AI-generation workflows, and SQL validation during a migration to shared services.' },
   { role: 'Business Analyst (Contract)', org: 'Fintex Inc.', dates: '2024 to 2025',
     text: 'Subject-matter expert on wealth-management data flows, APIs, and file formats (FNZ, Aviso, CIF matching, investor portal). Data mapping guides, validation rules, Swagger specs, and BRDs.' },
   { role: 'Web Development Mentor', org: 'Lighthouse Labs', dates: '2024',
@@ -32,7 +32,7 @@ const actions = [
 const btnClass = (i: number) => (i === 0 ? 'btn btn--primary' : i === 1 ? 'btn btn--secondary' : 'btn btn--text');
 const roles = ['AI Engineer', 'Applied AI Engineer', 'Agent / LLM Engineer', 'AI Solutions Engineer'];
 const skills = [
-  { area: 'AI AND AGENTS', items: 'AI-generation workflows · Developer prompts · Acceptance criteria for AI output · Agent evaluation' },
+  { area: 'AI AND AGENTS', items: 'AI-generation workflows · Developer prompts · Acceptance criteria for AI output · Agent evaluation · LLM validation' },
   { area: 'BACKEND AND DATA', items: 'Python · JavaScript · C# · .NET · Node.js · Express · React · PostgreSQL · MySQL · SQL · REST APIs' },
   { area: 'TESTING AND QUALITY', items: 'Acceptance criteria · Functional and regression testing · Cypress · Playwright · Defect triage' },
   { area: 'SYSTEMS ANALYSIS', items: 'Requirements elicitation · Data and process mapping · Swagger/OpenAPI specs · BRDs · UAT' },

@@ -20,7 +20,7 @@ interface Props {
 }
 const { title, description = SITE.description, type = 'website', image = '/og/default.png', published, updated, tags = [] } = Astro.props;
 // Bump OG_VERSION when the preview-image design changes, so LinkedIn and others fetch the new image.
-const OG_VERSION = 3;
+const OG_VERSION = 4;
 const imageURL = `${new URL(image, Astro.site).href}?v=${OG_VERSION}`;
 const pageTitle = title ? `${title} | ${SITE.title}` : `${SITE.title} | AI engineering notes`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
