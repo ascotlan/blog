@@ -132,6 +132,9 @@ const sourceList = sources.map((s) => (typeof s === 'string' ? { title: hostOf(s
   .prose :global(hr) { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
   .prose :global(img) { border-radius: var(--radius-md); border: 1px solid var(--border); }
   .prose :global(figure) { margin: 0; }
+  /* Image captions: an italic line written directly under a Markdown image. */
+  .prose :global(p:has(img) > a) { display: block; }
+  .prose :global(p:has(img) > em) { display: block; margin-top: 10px; font-size: 13px; line-height: 1.5; font-style: normal; color: var(--muted); }
   .prose :global(figcaption), .prose :global(.caption) { margin-top: 10px; font: 400 10px/1.5 var(--font-mono); color: var(--muted); text-transform: uppercase; }
   .prose :global(:not(pre) > code) { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.1em 0.35em; }
 
@@ -143,7 +146,7 @@ const sourceList = sources.map((s) => (typeof s === 'string' ? { title: hostOf(s
   .prose :global(pre code) { font-family: inherit; }
 
   .prose :global(table) { width: 100%; border-collapse: collapse; font: 400 12px/2 var(--font-mono); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
-  .prose :global(th), .prose :global(td) { text-align: left; padding: 4px 16px; white-space: nowrap; }
+  .prose :global(th), .prose :global(td) { text-align: left; vertical-align: top; padding: 6px 16px; line-height: 1.6; }
   .prose :global(th) { font-weight: 400; text-transform: uppercase; border-bottom: 1px solid var(--border); }
   .prose :global(tr:first-child td) { padding-top: 10px; }
 
@@ -166,6 +169,7 @@ const sourceList = sources.map((s) => (typeof s === 'string' ? { title: hostOf(s
     .author-card { flex-direction: column; align-items: flex-start; }
     .post-nav > div { max-width: 48%; }
     .prose :global(table) { display: block; overflow-x: auto; }
+    .prose :global(th), .prose :global(td) { white-space: nowrap; }
   }
 </style>
 
