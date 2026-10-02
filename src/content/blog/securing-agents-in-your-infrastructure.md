@@ -51,7 +51,7 @@ Hugging Face published both a [disclosure](https://huggingface.co/blog/security-
 
 What strikes me is how ordinary most of the failures were: a proxy was the weakest point of exit, and credentials sat where a compromised worker could read them. Hugging Face's own reflection puts it well: "machine-speed offense makes ordinary weaknesses more expensive for defenders." This was a frontier lab's agent in a security evaluation, not a workplace assistant, but the lesson transfers. An agent inside your network is a workload that probes and retries at machine speed, so every gap you have tolerated becomes easier to find.
 
-## A possible solution to rogue agents
+## Rogue agents: a four-layer control model
 
 There is no single fix, but there is a workable structure. I think of it as four layers, one for each of the questions I listed at the start. Figure 1 shows where each one sits, and the sections that follow take them in turn.
 
@@ -97,6 +97,8 @@ To make this concrete, picture the invoice follow-up agent from my last post run
 _Figure 2. The same prompt injection under each kind of control. The scenario is illustrative; I have not run it against either tool._
 
 Out-of-band logging catches what slips past both, and acceptance criteria catch the quieter failure: the wrong amount, sent with no attack at all.
+
+Acceptance criteria only help if something enforces them, and that is where they stop being a document and become part of the system. I see three ways to do it. The first is a deterministic check before the action commits: before the email leaves, compare the client, invoice number, amount and due date in the draft against the system of record, and block the send if anything differs. The second is a human gate for whatever a check cannot decide. The third is an audit after the fact: sample completed work, score it against the criteria, and use the results to widen or withdraw the agent's autonomy. Fuzzier criteria, such as tone, may need an LLM judge, and that judge needs its own evaluation against labelled examples before anyone should trust it.
 
 ## What I am still unsure about
 
