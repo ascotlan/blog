@@ -8,8 +8,8 @@ const arc = [
   { title: 'Electrical engineering', text: 'Signals, systems, modelling, and quantitative problem solving. BSc and MASc in Electrical Engineering.' },
   { title: 'Full-stack development', text: 'Interfaces, REST APIs, PostgreSQL databases, and deployments. Built client features and mentored full-stack cohorts.' },
   { title: 'Business systems analysis', text: 'Wealth-management data flows and integrations (FNZ, Aviso) translated into specifications, data mappings, and acceptance criteria.' },
-  { title: 'AI-generation workflows', text: 'Requirements and QA for AI-generation workflows, then the design of an LLM validation agent that checks their output.' },
-  { title: 'AI engineering', text: 'Systems thinking, software craft, and testing discipline brought together for agentic products.', current: true },
+  { title: 'AI-generation workflows', text: 'Requirements and QA for AI-generation workflows, then the design of an LLM validation agent that checks their output.', current: true },
+  { title: 'AI engineering', text: 'Systems thinking, software craft, and testing discipline brought together for agentic products.', next: true },
 ];
 const experience = [
   { role: 'Business Systems Analyst', org: 'Cocoa Classroom', dates: '2025 to present', current: true,
@@ -102,8 +102,8 @@ const education = [
       </div>
       <ol class="arc">
         {arc.map((a, i) => (
-          <li class={a.current ? 'current' : ''}>
-            <p class="arc-title"><span>{String(i + 1).padStart(2, '0')}</span>{a.title}</p>
+          <li class={a.current ? 'current' : a.next ? 'next' : ''}>
+            <p class="arc-title"><span>{String(i + 1).padStart(2, '0')}</span>{a.title}{a.next && <span class="arc-next">Next</span>}</p>
             <p class="arc-text">{a.text}</p>
           </li>
         ))}
@@ -175,6 +175,7 @@ const education = [
   .arc-title span { display: inline-block; width: 36px; }
   .arc-text { color: var(--muted); padding-left: 36px; }
   .arc .current .arc-title { color: var(--accent-text); }
+  .arc .arc-title .arc-next { width: auto; margin-left: 10px; padding: 2px 8px; border: 1px dashed var(--accent); border-radius: 999px; font: 600 10px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--accent-text); vertical-align: 2px; }
 
   .working { display: flex; flex-direction: column; gap: 32px; }
   .roles { display: flex; gap: 64px; align-items: flex-start; }
