@@ -1,18 +1,42 @@
 ---
 title: "Securing AI agents in your infrastructure: a sandbox is only the first layer"
-date: 2026-10-01
-status: draft
+date: 2026-10-02
+status: published
 summary: "Nvidia's OpenShell limits what an agent can reach. OpenAPPA limits where its data can go. Why agents inside your network need both, and more."
 tags: [agents, security, infrastructure, nvidia]
 sources:
-  - { title: "NVIDIA, Open Agent Safety Platform press release", url: "https://nvidianews.nvidia.com/news/open-agent-safety-platform" }
-  - { title: "NVIDIA Technical Blog, Open Agent Safety Platform: continuous in-silicon agent monitoring", url: "https://developer.nvidia.com/blog/nvidia-open-agent-safety-platform-a-reference-for-continuous-in-silicon-agent-monitoring/" }
-  - { title: "NVIDIA OpenShell on GitHub", url: "https://github.com/NVIDIA/openshell" }
-  - { title: "VentureBeat, Nvidia's OpenShell controls what AI agents can access", url: "https://venturebeat.com/infrastructure/nvidias-openshell-controls-what-ai-agents-can-access-even-when-they-ignore-instructions" }
-  - { title: "Global News (The Associated Press), NVIDIA says its new platform will stop AI agents from going rogue", url: "https://globalnews.ca/news/12075613/nvidia-ai-agents-security/" }
-  - { title: "Hugging Face, Security incident disclosure, July 2026", url: "https://huggingface.co/blog/security-incident-july-2026" }
-  - { title: "Hugging Face, Anatomy of a frontier lab agent intrusion", url: "https://huggingface.co/blog/agent-intrusion-technical-timeline" }
-  - { title: "OpenAPPA on GitHub", url: "https://github.com/archestra-ai/OpenAPPA" }
+  - {
+      title: "NVIDIA, Open Agent Safety Platform press release",
+      url: "https://nvidianews.nvidia.com/news/open-agent-safety-platform",
+    }
+  - {
+      title: "NVIDIA Technical Blog, Open Agent Safety Platform: continuous in-silicon agent monitoring",
+      url: "https://developer.nvidia.com/blog/nvidia-open-agent-safety-platform-a-reference-for-continuous-in-silicon-agent-monitoring/",
+    }
+  - {
+      title: "NVIDIA OpenShell on GitHub",
+      url: "https://github.com/NVIDIA/openshell",
+    }
+  - {
+      title: "VentureBeat, Nvidia's OpenShell controls what AI agents can access",
+      url: "https://venturebeat.com/infrastructure/nvidias-openshell-controls-what-ai-agents-can-access-even-when-they-ignore-instructions",
+    }
+  - {
+      title: "Global News (The Associated Press), NVIDIA says its new platform will stop AI agents from going rogue",
+      url: "https://globalnews.ca/news/12075613/nvidia-ai-agents-security/",
+    }
+  - {
+      title: "Hugging Face, Security incident disclosure, July 2026",
+      url: "https://huggingface.co/blog/security-incident-july-2026",
+    }
+  - {
+      title: "Hugging Face, Anatomy of a frontier lab agent intrusion",
+      url: "https://huggingface.co/blog/agent-intrusion-technical-timeline",
+    }
+  - {
+      title: "OpenAPPA on GitHub",
+      url: "https://github.com/archestra-ai/OpenAPPA",
+    }
   - { title: "OpenAPPA, Evaluation", url: "https://openappa.com/evaluation" }
 devto: true
 ---
@@ -28,7 +52,7 @@ Hugging Face published both a [disclosure](https://huggingface.co/blog/security-
 What strikes me is how ordinary most of the failures were: a proxy was the weakest point of exit, and credentials sat where a compromised worker could read them. Hugging Face's own reflection puts it well: "machine-speed offense makes ordinary weaknesses more expensive for defenders." This was a frontier lab's agent in a security evaluation, not a workplace assistant, but the lesson transfers. An agent inside your network is a workload that probes and retries at machine speed, so every gap you have tolerated becomes easier to find.
 
 [![Diagram of four layers. Inside a sandbox such as OpenShell, an agent's actions pass a flow check such as OpenAPPA before reaching its tools, and an egress policy on the sandbox wall decides which endpoints it can reach. An independent monitor watches from outside, and acceptance criteria judge the result.](/images/securing-agents/four-layers.png)](/images/securing-agents/four-layers.png)
-*Figure 1. Where each control sits on the path from an agent to the outside world.*
+_Figure 1. Where each control sits on the path from an agent to the outside world._
 
 ## Layer 1: what the agent can reach
 
@@ -56,17 +80,17 @@ Sentry is a reference design aimed at frontier labs, and Nvidia says organizatio
 
 A security engineer could fairly object that this is not a security layer, and in the narrow sense that is true. The first three layers are security controls; the fourth is operational assurance. I include it because an agent that securely performs the wrong action is still not safe to delegate work to. An agent can stay inside its sandbox, send data only to approved destinations, pass every monitor, and still email the right client the wrong invoice amount. Catching that takes acceptance criteria and evidence, and no vendor sells them, because they depend on what your process means by "correct."
 
-| Layer | Question it answers | Example control | What it cannot see |
-| --- | --- | --- | --- |
-| Reach | What can the agent touch? | OpenShell sandbox and egress policy | Data moving between allowed tools |
-| Flow | Where may this data go? | OpenAPPA flow check | Escapes below the tool layer |
-| Watch | Who notices when it goes wrong? | Sentry, out-of-band logs and alerts | Whether the output is correct |
-| Verify | Did the result meet the requirement? | Acceptance criteria and evidence | Anything the criteria leave out |
+| Layer  | Question it answers                  | Example control                     | What it cannot see                |
+| ------ | ------------------------------------ | ----------------------------------- | --------------------------------- |
+| Reach  | What can the agent touch?            | OpenShell sandbox and egress policy | Data moving between allowed tools |
+| Flow   | Where may this data go?              | OpenAPPA flow check                 | Escapes below the tool layer      |
+| Watch  | Who notices when it goes wrong?      | Sentry, out-of-band logs and alerts | Whether the output is correct     |
+| Verify | Did the result meet the requirement? | Acceptance criteria and evidence    | Anything the criteria leave out   |
 
 To make this concrete, picture the invoice follow-up agent from my last post running inside your network, with read access to receivables and permission to send email. A client's reply hides an instruction to forward the full receivables report to an outside address. A reach-only policy allows it, because the agent may read receivables and may send email. A flow policy that labels the report as internal blocks it before the email leaves.
 
 [![Two panels comparing the same prompt injection. Under reach control, reading receivables and sending email are both allowed, so the report leaves the network. Under flow control, the receivables carry an internal label, and sending them to an outside address is blocked before the email is sent.](/images/securing-agents/reach-vs-flow.png)](/images/securing-agents/reach-vs-flow.png)
-*Figure 2. The same prompt injection under each kind of control. The scenario is illustrative; I have not run it against either tool.*
+_Figure 2. The same prompt injection under each kind of control. The scenario is illustrative; I have not run it against either tool._
 
 Out-of-band logging catches what slips past both, and acceptance criteria catch the quieter failure: the wrong amount, sent with no attack at all.
 
