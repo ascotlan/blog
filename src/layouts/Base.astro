@@ -97,5 +97,8 @@ const jsonLd =
     <Header />
     <main id="main"><slot /></main>
     <Footer />
+    {import.meta.env.PROD && SITE.goatcounter && (
+      <script is:inline data-goatcounter={SITE.goatcounter} async src="https://gc.zgo.at/count.js"></script>
+    )}
   </body>
 </html>

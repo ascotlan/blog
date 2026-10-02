@@ -21,4 +21,7 @@ export const SITE = {
   // Link for the "Evaluation loop" card on the home page, e.g. "/posts/my-first-eval/".
   // Set it once a post or project shows the method in practice.
   evalLoopLink: "",
+  // GoatCounter analytics (free, no cookies). Dashboard: https://scenehere.goatcounter.com
+  // Leave empty ("") to turn analytics off. Only loads on the live site, not in local dev.
+  goatcounter: "https://scenehere.goatcounter.com/count",
 };
