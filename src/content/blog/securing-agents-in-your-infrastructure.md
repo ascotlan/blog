@@ -51,6 +51,10 @@ Hugging Face published both a [disclosure](https://huggingface.co/blog/security-
 
 What strikes me is how ordinary most of the failures were: a proxy was the weakest point of exit, and credentials sat where a compromised worker could read them. Hugging Face's own reflection puts it well: "machine-speed offense makes ordinary weaknesses more expensive for defenders." This was a frontier lab's agent in a security evaluation, not a workplace assistant, but the lesson transfers. An agent inside your network is a workload that probes and retries at machine speed, so every gap you have tolerated becomes easier to find.
 
+## A possible solution to rogue agents
+
+There is no single fix, but there is a workable structure. I think of it as four layers, one for each of the questions I listed at the start. Figure 1 shows where each one sits, and the sections that follow take them in turn.
+
 [![Diagram of four layers. Inside a sandbox such as OpenShell, an agent's actions pass a flow check such as OpenAPPA before reaching its tools, and an egress policy on the sandbox wall decides which endpoints it can reach. An independent monitor watches from outside, and acceptance criteria judge the result.](/images/securing-agents/four-layers.png)](/images/securing-agents/four-layers.png)
 _Figure 1. Where each control sits on the path from an agent to the outside world._
 
