@@ -16,6 +16,7 @@ Use this guide when researching, drafting, or editing posts for Antonio's blog o
 
 - **Never use em dashes (Unicode U+2014) in any output.** Rewrite with periods, commas, colons or parentheses as appropriate. Check the final text for em dashes before handing it over.
 - **Never publish without Antonio's explicit approval.** Drafts are proposals. Publishing, scheduling, or cross-posting happens only after he approves the final text.
+- **Put the blog URL on every generated image.** Diagrams, figures and social images must show `blog.scenehere.ca` somewhere visible, such as a small footer line, so the image still points back to the blog when it is shared on its own (for example, attached to a LinkedIn post).
 
 ## Workflow and review gates
 
