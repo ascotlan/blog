@@ -1,7 +1,7 @@
 ---
 title: "PHP2Shell and the smarter-attacker test: which defences still hold when AI finds the bugs"
 date: 2026-10-23
-status: draft
+status: published
 summary: "AI-assisted research found two critical PHP flaws. Which defences still work when the attacker is smarter than your whole team?"
 tags: [security, ai, php, opensource]
 sources:
